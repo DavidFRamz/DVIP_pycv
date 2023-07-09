@@ -2,18 +2,15 @@
 """
 Created on Thu Dec 28 17:52:55 2017
 
-@author: Yo. Telecommunications and Electronics Engineering student.
+@author: Me. When i was a Telecommunications and Electronics Engineering student.
 """
-
-
-
 
 import cv2
 import numpy as np
 import math
 from matplotlib import pyplot as plt
 
-video = cv2.VideoCapture('GOPR0649.MP4')
+video = cv2.VideoCapture('videos/GOPR0649.MP4')
 ejex_rojo=[]
 ejex_azul =[]
 ejey_rojo=[]
@@ -24,93 +21,82 @@ fps = video.get(5)
 kernel = np.ones((3,3),np.uint8)
 ret,frame = video.read()
 
-#Lo primero que vamos a hacer es fijar los parametros de hue,value y saturation maximos y minimos segun el primer frame del video
-#para encontrar las bolas azul y roja;esto lo hariamos para definir una roi determinada para seguir el rastreo.No le fijamos directamente
-#el rango de valores, pues este cambia en cada video por la calidad de imagen en cada uno de ellos.
+""" First of all is to fix the min and max values of hue, saturation and value, taking account the 
+first frame only, in order to track down the red and blue balls along the video."""
 
 
-# Prueba de colores
+# Colors selection GUI
 
 def nothing(x):
    pass
 
-#Creamos una ventana llamada 'image' en la que habra todos los sliders
-cv2.namedWindow('Azul')
-cv2.resizeWindow('Azul',500,300)
-cv2.createTrackbar('Hue Minimo','Azul',0,255,nothing)
-cv2.createTrackbar('Hue Maximo','Azul',0,255,nothing)
-cv2.createTrackbar('Saturation Minimo','Azul',0,255,nothing)
-cv2.createTrackbar('Saturation Maximo','Azul',0,255,nothing)
-cv2.createTrackbar('Value Minimo','Azul',0,255,nothing)
-cv2.createTrackbar('Value Maximo','Azul',0,255,nothing)
+cv2.namedWindow('Blue')
+cv2.resizeWindow('Blue',500,300)
+cv2.createTrackbar('Hue Min','Blue',0,255,nothing)
+cv2.createTrackbar('Hue Max','Blue',0,255,nothing)
+cv2.createTrackbar('Saturation Min','Blue',0,255,nothing)
+cv2.createTrackbar('Saturation Max','Blue',0,255,nothing)
+cv2.createTrackbar('Value Min','Blue',0,255,nothing)
+cv2.createTrackbar('Value Max','Blue',0,255,nothing)
 
 
 while(1):
-#   _,frame = video.read() #Leer un frame
 
-  hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #Convertirlo a espacio de color HSV
+  hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #Convert colors space
 
-  #Los valores maximo y minimo de H,S y V se guardan en funcion de la posicion de los sliders
-  hMin_A = cv2.getTrackbarPos('Hue Minimo','Azul')
-  hMax_A = cv2.getTrackbarPos('Hue Maximo','Azul')
-  sMin_A = cv2.getTrackbarPos('Saturation Minimo','Azul')
-  sMax_A = cv2.getTrackbarPos('Saturation Maximo','Azul')
-  vMin_A = cv2.getTrackbarPos('Value Minimo','Azul')
-  vMax_A = cv2.getTrackbarPos('Value Maximo','Azul')
+  #get color range frome gui
+  hMin_A = cv2.getTrackbarPos('Hue Min','Blue')
+  hMax_A = cv2.getTrackbarPos('Hue Max','Blue')
+  sMin_A = cv2.getTrackbarPos('Saturation Min','Blue')
+  sMax_A = cv2.getTrackbarPos('Saturation Max','Blue')
+  vMin_A = cv2.getTrackbarPos('Value Min','Blue')
+  vMax_A = cv2.getTrackbarPos('Value Max','Blue')
   
   
 
-  #Se crea un array con las posiciones minimas y maximas
   lower_A=np.array([hMin_A,sMin_A,vMin_A])
   upper_A=np.array([hMax_A,sMax_A,vMax_A])
 
-  #Deteccion de colores
+  #Color detection/ create a blue-mask
   maskcolores_A = cv2.inRange(hsv, lower_A, upper_A)
 
-  #Mostrar los resultados y salir
+  #Show mask
   cv2.imshow('frame',frame)
   cv2.imshow('mask',maskcolores_A)
   k = cv2.waitKey(5) & 0xFF
   if k == 27:
     break
 cv2.destroyAllWindows()
-# video.release()
 
 
-
-
-cv2.namedWindow('Rojo')
-cv2.resizeWindow('Rojo',500,300)
-cv2.createTrackbar('Hue Minimo','Rojo',0,255,nothing)
-cv2.createTrackbar('Hue Maximo','Rojo',0,255,nothing)
-cv2.createTrackbar('Saturation Minimo','Rojo',0,255,nothing)
-cv2.createTrackbar('Saturation Maximo','Rojo',0,255,nothing)
-cv2.createTrackbar('Value Minimo','Rojo',0,255,nothing)
-cv2.createTrackbar('Value Maximo','Rojo',0,255,nothing)
+cv2.namedWindow('Red')
+cv2.resizeWindow('Red',500,300)
+cv2.createTrackbar('Hue Min','Red',0,255,nothing)
+cv2.createTrackbar('Hue Max','Red',0,255,nothing)
+cv2.createTrackbar('Saturation Min','Red',0,255,nothing)
+cv2.createTrackbar('Saturation Max','Red',0,255,nothing)
+cv2.createTrackbar('Value Min','Red',0,255,nothing)
+cv2.createTrackbar('Value Max','Red',0,255,nothing)
 
 while(1):
+  hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #Convert colors space
 
-#   _,frame = video.read() #Leer un frame
-  hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #Convertirlo a espacio de color HSV
-
-  #Los valores maximo y minimo de H,S y V se guardan en funcion de la posicion de los sliders
-  hMin_R = cv2.getTrackbarPos('Hue Minimo','Rojo')
-  hMax_R = cv2.getTrackbarPos('Hue Maximo','Rojo')
-  sMin_R = cv2.getTrackbarPos('Saturation Minimo','Rojo')
-  sMax_R = cv2.getTrackbarPos('Saturation Maximo','Rojo')
-  vMin_R = cv2.getTrackbarPos('Value Minimo','Rojo')
-  vMax_R = cv2.getTrackbarPos('Value Maximo','Rojo')
+  #Get color range from gui
+  hMin_R = cv2.getTrackbarPos('Hue Min','Red')
+  hMax_R = cv2.getTrackbarPos('Hue Max','Red')
+  sMin_R = cv2.getTrackbarPos('Saturation Min','Red')
+  sMax_R = cv2.getTrackbarPos('Saturation Max','Red')
+  vMin_R = cv2.getTrackbarPos('Value Min','Red')
+  vMax_R = cv2.getTrackbarPos('Value Max','Red')
   
   
-
-  #Se crea un array con las posiciones minimas y maximas
   lower_R=np.array([hMin_R,sMin_R,vMin_R])
   upper_R=np.array([hMax_R,sMax_R,vMax_R])
 
-  #Deteccion de colores
+  #Color detection/ create a red-mask
   maskcolores_R = cv2.inRange(hsv, lower_R, upper_R)
 
-  #Mostrar los resultados y salir
+  #Show mask
   cv2.imshow('frame',frame)
   cv2.imshow('mask',maskcolores_R)
   k = cv2.waitKey(5) & 0xFF
@@ -118,16 +104,19 @@ while(1):
     break
 cv2.destroyAllWindows()
 
-#Una vez fijada las parametros de la mascara y realizado el filtrado pasamos a eliminar todas aquellas pequeñas zonas que no corresponden
-# a la bola que aparecen dentro del rango de hsv declarado y que por lo tanto son ruido para nuestro analisis;para ello empleamos una 
-#funcion morphologyEx la cual dilata y comprime las zonas donde existan bit en 1 de tal forma que cuando se restabece la imagen a su
-#forma original todas las pequeñas areas de pixeles que no tienen un tamaño apropiado con el de las bolas queda eliminado.Luego de esto
-#detectamos contornos y nos quedamos con el mayor de ellos(que sera donde este la bola azul o roja) para con este a traves del metodo de
-#los momentos detectar el centro de los objetos que vamos a ver y estudiar su comportamiento en medios granulares.Conociendo ya la posicion 
-# de las bolas roja y azul podemos definir una zona especifica a la cual realizarle todo el procedimiento de deteccion(la llamada roi)
+"""Once the mask parameters have been set and the filtering has been done, we proceed to eliminate
+all those small areas that do not correspond to the ball that appear within the declared hsv range
+and that are therefore noise for our analysis; for this we use a morphologyEx function which dilates
+and compresses the areas where there are bits in 1 in such a way that when the image is restored to
+its original shape all the small areas of pixels that do not have an appropriate size with that of 
+the balls are eliminated. After this we detect contours and we are left with the largest of them
+(which will be where the blue or red ball is) for with this, through the method of moments, detect
+the center of the objects that we are going to see and study their behavior in granular media.
+ Knowing the position of the red and blue balls we can define a specific area to which to carry 
+ out the entire detection procedure (the so-called roi)
+"""
 
-
-###########eliminando ruido y hallando contorno###################################
+########### Eliminating noise and finding contours ###################################
 mayorB=0
 mayorR=0
 
@@ -137,26 +126,25 @@ openingR = cv2.morphologyEx(maskcolores_R, cv2.MORPH_OPEN, kernel)
 contornoB= cv2.findContours(openingB,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)[0]
 contornoR= cv2.findContours(openingR,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)[0]
 print(len(contornoB))
-######################### encontrando el mayor contorno #####################
-l=0
-while l<len(contornoB):
-    area=cv2.contourArea(contornoB[l])
+
+######################### Find largest contour #####################
+for i,j in enumerate(contornoB):
+    area = cv2.contourArea(contornoB[i])
     if area>=mayorB:
-        mayorB=area
-        cntB=contornoB[l]
-    l=l+1
+        mayorB = area
+        cntB = j
 (x,y),radius = cv2.minEnclosingCircle(cntB)
 radio=4*int(radius)
 r=int(y)
 c=int(x)
 
-l=0
-while l<len(contornoR):
-    area=cv2.contourArea(contornoR[l])
+
+
+for i,j in enumerate(contornoR):
+    area=cv2.contourArea(contornoR[i])
     if area>=mayorR:
         mayorR=area
-        cntR=contornoR[l]
-    l=l+1
+        cntR=j
 (x,y),radiusr = cv2.minEnclosingCircle(cntR)
 radio_R=4*int(radiusr)
 r_R=int(y)
@@ -164,8 +152,8 @@ c_R=int(x)
 
 
 centro=(c,r)
-vector_radio=[]#este vector lo utilizaremos para comprobar que el radio del intruso se mantenga constante en el tiempo
-d=math.sqrt((c-c_R)**2+(r-r_R)**2)#distancia a la que se encuentra la bola roja de la azul
+vector_radio=[]
+d=math.sqrt((c-c_R)**2+(r-r_R)**2)  #distance  between the blue and red balls
 vector_radio.append(d)
 desplazamiento=int(d)+radio_R
 
@@ -187,7 +175,7 @@ roi_fila=r-desplazamiento
 ancho=2*desplazamiento
 
 
-############# Metodo mio para cada frame del video ###########################################
+############# Processing Video ###########################################
 while(1):
      ret, frame = video.read()
      
@@ -212,33 +200,29 @@ while(1):
          mayorR=0
        
          mayorB=0
-         #cogiendo el cnt bola roja
-         l=0
-         while l<len(contornoB):
-            area=cv2.contourArea(contornoB[l])
+         
+         
+         for i,j in enumerate(contornoB):
+            area = cv2.contourArea(contornoB[i])
             if area>=mayorB:
-                mayorB=area
-                cntB=contornoB[l]
-            l=l+1
-                 
-               
-                 
-         #azul       
-         l=0
-         while l<len(contornoR):
-            area=cv2.contourArea(contornoR[l])
+                mayorB = area
+                cntB = j
+
+         for i,j in enumerate(contornoR):
+            area=cv2.contourArea(contornoR[i])
             if area>=mayorR:
                 mayorR=area
-                cntR=contornoR[l]
-            l=l+1
+                cntR=j
+
+                
                  
          
-         #circuncirculo rojo      
+         #red encircle    
          (x,y),rad = cv2.minEnclosingCircle(cntR)
          center = (int(x)+roi_col,int(y)+roi_fila)
          cR=cv2.circle(frame,center,int(radius),(0,0,255),-2)
 
-         #circuncirculo  azul 
+         #blue encircle 
          (x,y),radi = cv2.minEnclosingCircle(cntB)
          center = (int(x)+roi_col,int(y)+roi_fila)
          cB=cv2.circle(frame,center,int(radiusr),(255,0,0),-2)
@@ -293,7 +277,7 @@ while(1):
          
          roi_fila=int(y_a)-desplazamiento
          
-         #hallando  angulo
+         #angle
          x=x_r-x_a
          y=y_a-y_r
          
@@ -319,11 +303,9 @@ video.release()
          
              
              
-#
-#
-##Determinar angulo de giro
+# Find turning angle
 ang_ini=angulo[0]+10
-ang_final=0####no estaba
+ang_final=0
 l=0
 while l < len(angulo):
     
@@ -332,153 +314,121 @@ while l < len(angulo):
     
     l=l+1    
 ang_giro=abs(ang_final-ang_ini)         
-print("El angulo de giro es:" + str(ang_giro))  
-#
-##Determinar la velocidad angular   
-#velocidad_ang=np.diff(angulo)/(1/119.88) 
-#
-#
-#
-#
-##Determinar la velocidad lineal
-#
-#velocidad_lineal=velocidad_ang*d  
+print("The turning angle is: " + str(ang_giro))   
 
 
-                
 #==============================================================================
-#ANALISIS Y RESULTADOS     
+#Analysis and Results    
 #==============================================================================
 
 #===============================
-#DETERMINAR ANGULO DE GIRO
+#Angular velocity
 #===============================
 
 
-#Definir indice de tiempo
-ta = range(0, len(angulo))
-
-#Conformar el eje de tiempo para graficar el angulo
 tiempo_a = []
-
-
-for i in ta:
+for i in range(0, len(angulo)):
     valor = i/fps
     tiempo_a.append(valor)  
     
 
 velocidad_ang = np.diff(angulo)/(1/fps)
 
-#Definir indice de tiempo
-tv = range(0, len(velocidad_ang))
 
-#Conformar el eje de tiempo para graficar la velocidad
 tiempo_v = []
-for i in tv:
+for i in range(0, len(velocidad_ang)):
     valor = i/fps
     tiempo_v.append(valor)  
-
-
 #===============================
-#DETERMINAR VELOCIDAD LINEAL 
+#Linear velocity 
 #===============================
-d = math.sqrt((c-c_R)**2+(r-r_R)**2) #Encontrar el radio del circul(distancia e/ azul y rojo)
+d = math.sqrt((c-c_R)**2+(r-r_R)**2) #radius
 
 velocidad_lineal = velocidad_ang*d 
 
  
 #=====================================================             
-#REPRESENTACION GRAFICA DE LOS RESULTADOS
+#Plotting
 #=====================================================
 
 
 
-#GRAFICAR EL ANGULO EN FUNCION DEL TIEMPO
+#Angle vs time
 #=========================================
 plt.figure(0)
 plt.plot(tiempo_a,angulo,linewidth = 0.5)
-plt.title("ANGULO")
-plt.xlabel('tiempo [s]')
-plt.ylabel('grado')
+plt.title("Angle")
+plt.xlabel('time [s]')
+plt.ylabel('degrees')
 plt.grid()
-#GRAFICAR LA VELOCIDAD ANGULAR EN FUNCION DEL TIEMPO
+#Angular velocity vs time
 #====================================================
 plt.figure(1)
 plt.plot(tiempo_v,velocidad_ang*0.0004,linewidth = 0.5,color = 'r')
-plt.title("VELOCIDAD ANGULAR")
-plt.xlabel('tiempo [s]')
-plt.ylabel('velocidad [m/s]')
+plt.title("Angular velocity")
+plt.xlabel('time [s]')
+plt.ylabel('velovelocity [m/s]')
 plt.grid()
 
-#GRAFICAR LA VELOCIDAD LINEAL EN FUNCION DEL TIEMPO
+#Linear velocity vs time
 #====================================================
 plt.figure(2)
 plt.plot(tiempo_v,velocidad_lineal*0.0004,linewidth = 0.5,color = 'g')
-plt.title("VELOCIDAD LINEAL")
-plt.xlabel('tiempo [s]')
-plt.ylabel('velocidad [m/s]')
+plt.title("Linear velocity")
+plt.xlabel('time [s]')
+plt.ylabel('velocity [m/s]')
 plt.grid()
 
 
 
-#GRAFICAR LA POSICIONL EN FUNCION DEL TIEMPO
+#Position vs time
 #====================================================
 
 
-
-#Definir indice de tiempo
-teje = range(0, len(ejex_rojo))
-
-
-#Conformar el eje de tiempo para graficar la velocidad
 tiempo_eje = []
-
-for i in teje:
+for i in range(0, len(ejex_rojo)):
     valor = i/fps
     tiempo_eje.append(valor)  
 
     
-#Posicion en x de los circulos azul y rojo  
+#Position vs x_axis 
 plt.figure(3)
 plt.plot([tiempo_eje,tiempo_eje],[ejex_rojo,ejex_azul],linewidth = 0.3,color = 'black')
 plt.plot(tiempo_eje,ejex_rojo,'.',color = 'r')
 plt.plot(tiempo_eje,ejex_azul,'.',color = 'b')
-plt.title("POSICION EN EL EJE X")
-plt.xlabel('tiempo [s]')
-plt.ylabel('pixel')
+plt.title("Position vs x axis")
+plt.xlabel('time [s]')
+plt.ylabel('pixels')
 
 
- #Posicion en y de los circulos azul y rojo 
-#estas dos ultimas graficas nos salen poniendolas directamente en la consola no corriendo el programa
-#eso lo arreglamos despues  
+#Position vs y_axis
 plt.figure(4)
 plt.plot([tiempo_eje,tiempo_eje],[ejey_rojo,ejey_azul],linewidth = 0.3,color = 'black')
 plt.plot(tiempo_eje,ejey_rojo,'.',color ='r')
 plt.plot(tiempo_eje,ejey_azul,'.',color ='b')
-plt.title("POSICION EN EL EJE Y")
-plt.xlabel('tiempo [s]')
-plt.ylabel('pixel')
+plt.title("Position vs y axis")
+plt.xlabel('time [s]')
+plt.ylabel('pixels')
         
      
 #            
-#VARIANTE (IV) (ploteo de fila x columna)=> este es el ploteo bueno bueno
+#(x, y) vs time
 plt.figure(5)
 plt.plot([ejex_rojo,ejex_azul],[ejey_rojo,ejey_azul],linewidth = 0.5,color = 'black')
 plt.plot(ejex_rojo,ejey_rojo,'.',color = 'r')
 plt.plot(ejex_azul,ejey_azul,'.',color = 'b')
-plt.title("POSICION ")
-plt.xlabel('columna')
-plt.ylabel('fila')
+plt.title("Positon ")
+plt.xlabel('columns')
+plt.ylabel('rows')
   
 ##################################################################################
 plt.figure(6)
 plt.plot(vector_radio,'m')
-plt.title("Radio del intruso en el tiempo ")
-plt.xlabel('tiempo')
-plt.ylabel('radio')
+plt.title("Intruder's radius vs time")
+plt.xlabel("time")
+plt.ylabel("radius")
 
 
-#Essto es para invertir los valores de la lista y plotear como en el video
 ejex_rojo_new = []
 ejex_azul_new = []
 l=0
@@ -491,7 +441,7 @@ plt.figure(7)
 plt.plot([ejex_rojo_new,ejex_azul_new],[ejey_rojo,ejey_azul],linewidth = 0.5,color = 'b')
 plt.plot(ejex_rojo_new,ejey_rojo,'.',color = 'r')
 plt.plot(ejex_azul_new,ejey_azul,'.',color = 'b')
-plt.title("POSICION refejada en x ")
-plt.xlabel('columna')
-plt.ylabel('fila')
+plt.title("Reflected position with respect to x ")
+plt.xlabel('column')
+plt.ylabel('row')
 plt.show()
