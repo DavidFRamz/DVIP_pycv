@@ -420,28 +420,29 @@ plt.plot(ejex_azul,ejey_azul,'.',color = 'b')
 plt.title("Positon ")
 plt.xlabel('columns')
 plt.ylabel('rows')
+plt.axis([0,max(ejex_rojo)+20,max(ejey_azul)+20,150])
   
 ##################################################################################
-plt.figure(6)
-plt.plot(vector_radio,'m')
-plt.title("Intruder's radius vs time")
-plt.xlabel("time")
-plt.ylabel("radius")
+# plt.figure(6)
+# plt.plot(vector_radio,'m')
+# plt.title("Intruder's radius vs time")
+# plt.xlabel("time")
+# plt.ylabel("radius")
 
 
-ejex_rojo_new = []
-ejex_azul_new = []
-l=0
-while l < len(ejex_rojo):
-   v=-(l+1)
-   ejex_rojo_new.append(ejex_rojo[v])
-   ejex_azul_new.append( ejex_azul[v])
-   l=l+1
-plt.figure(7)
-plt.plot([ejex_rojo_new,ejex_azul_new],[ejey_rojo,ejey_azul],linewidth = 0.5,color = 'b')
-plt.plot(ejex_rojo_new,ejey_rojo,'.',color = 'r')
-plt.plot(ejex_azul_new,ejey_azul,'.',color = 'b')
-plt.title("Reflected position with respect to x ")
-plt.xlabel('column')
-plt.ylabel('row')
-plt.show()
+# ejex_rojo_new = []
+# ejex_azul_new = []
+# l=0
+# while l < len(ejex_rojo):
+#    v=-(l+1)
+#    ejex_rojo_new.append(ejex_rojo[v])
+#    ejex_azul_new.append( ejex_azul[v])
+#    l=l+1
+# plt.figure(7)
+# plt.plot([ejex_rojo_new,ejex_azul_new],[ejey_rojo,ejey_azul],linewidth = 0.5,color = 'b')
+# plt.plot(ejex_rojo_new,ejey_rojo,'.',color = 'r')
+# plt.plot(ejex_azul_new,ejey_azul,'.',color = 'b')
+# plt.title("Reflected position with respect to x ")
+# plt.xlabel('column')
+# plt.ylabel('row')
+# plt.show()
