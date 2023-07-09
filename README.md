@@ -1,6 +1,6 @@
 # Intrusion tracking in granular media / Color Object Tracking
 
-![Example of an intruder](readme/f1.png)
+![Example of an intruder](ex_hsv/f1.png)
 
 The program must plot the behavior of the position, the angle of rotation, the linear and angular velocity of an intruder that penetrates a region filled with a confined granular medium.
 
